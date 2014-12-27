@@ -59,9 +59,13 @@ geturl() {
 
 download1() {
 	local url="$1"
+	local filename=$(basename "${url}")
 	local prefix="$(basename "${url}" | sed 's/-[0-9].*//g')"
 
-	if ! [ -n "$(ls "${SOURCESROOT}/${prefix}-"[0-9]* 2> /dev/null)" ]; then
+	if ! [ -f "${SOURCESROOT}/${filename}" ]; then
+		if [ -n "$(ls "${SOURCESROOT}/${prefix}-"[0-9]* 2> /dev/null)" ]; then
+			rm "${SOURCESROOT}/${prefix}-"[0-9]*
+		fi
 		geturl ${url} || die "Cannot download ${url}"
 	fi
 }
